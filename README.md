@@ -1,2 +1,2 @@
 # Role-playing-game
-#learnong Javascript with freecodecamp
+#learning Javascript with freecodecamp
