@@ -56,6 +56,42 @@ const monsterStats = document.querySelector("#monsterStats");
 const monsterName = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");//Since I have already declared a variable with monsterHealth in line 20 I used another variable here to catch the element with the id #monsterHealth.
 
+//An empty array called location since I just created an update funtion in line 130
+//Then added an empty object to the array
+//objects are denoted by curly braces{}
+//They can be stored in an array with their keys used to access and modify data
+/*
+ Object properties are written as key: value pairs, where "key" is the name of the property(or the key), and "value" is the value that property holds.
+*/
+//Added a "name" property with a value of "town square"
+//Object properties seperated by comma just like array values
+//Added a "button text" property with the value of an empty array
+//Because the "button text" which is the property name has more than one word I surrounded it in quotes
+//Gave the empty button text array three strings which are the values assigned to the button innerText in the goTown function
+/*
+  Created another property called "button functions"
+  Gave this property an array containing the three functions assigned the onclick properties in the goTown function
+  These functions are the goStore goCave and fightDragon
+  These functions are variables not strings so are not wrapped in quotes
+*/
+//Added the text property and gave it the value assigned to the text.innerText in the goTown function
+const locations = [
+  {
+  name: "town square",
+  "button text": ["Go to store", "Go to cave", "Fight dragon"],
+  "button functions": [goStore, goCave, fightDragon],
+  text: "You are in the town square. You see a sign that says \"Store\"."
+  },
+  //Added a second object seperated by a comma
+  //Same pattern from above but this time using the values from the goStore function
+  {
+    name: "store",
+    "button text": ["Buy 10 health (10 gold)", "Buy weapon (30 gold)", "Go to town square"],
+    "button functions": [buyHealth, buyWeapon, goTown],
+    text: "You enter the store."
+  }
+];
+
 //Functions allow to run specific sections of code at specific times
 //functions are declared using the "function" keyword
 //Here is an example of a function that outputs "Hello World"
@@ -121,3 +157,11 @@ function buyWeapon(){
 
 }
 
+//Now there is  repetition in the goTown and goStor functions.
+//When there is repetition in code it is a sign that another function is needed 
+//functions can take parameters which is the value given to the function each time it runs
+
+//An empty function  callled "update" which takes a parameter called "location"
+function update(location){
+  
+}
