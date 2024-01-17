@@ -45,7 +45,7 @@ inventory = ["stick"]
 
 //let button1 = document.querySelector("#button1");//Here we create "button1" variable and use "querySelctor()"" to assign it the button element which has an id of button1(id elements are prefixed by #)
  
-const button1 = document.querySelector("#button1");//since the button1 variab;le is not going to be reassigned we use the const keyword to decare it instead of the let keyword. This will tell JS to throw an error if we accidentally reassign it.
+const button1 = document.querySelector("#button1");//since the button1 variable is not going to be reassigned we use the const keyword to decare it instead of the let keyword. This will tell JS to throw an error if we accidentally reassign it.
 const button2 = document.querySelector("#button2");
 const button3 = document.querySelector("#button3");
 const text = document.querySelector("#text");
@@ -55,6 +55,25 @@ const goldText = document.querySelector("#goldText");
 const monsterStats = document.querySelector("#monsterStats");
 const monsterName = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");//Since I have already declared a variable with monsterHealth in line 20 I used another variable here to catch the element with the id #monsterHealth.
+const weapons = [
+  {
+    name:"stick",
+    power: 5
+  },
+  {
+    name: "dagger",
+    power: 30
+  },
+  {
+    name: "claw hammer",
+    power: 50
+  },
+  {
+    name: "sword",
+    power: 100
+  }
+];
+let value
 
 //An empty array called location since I just created an update funtion in line 130
 //Then added an empty object to the array
@@ -89,6 +108,13 @@ const locations = [
     "button text": ["Buy 10 health (10 gold)", "Buy weapon (30 gold)", "Go to town square"],
     "button functions": [buyHealth, buyWeapon, goTown],
     text: "You enter the store."
+  },
+  {
+    name: "cave",
+    "button text": ["Fight slime", "Fight fanged beast", "Go to town square"],
+    "button functions": [fightSlime, fightBeast, goTown],
+    text: "You enter the cave. You see some monsters."
+
   }
 ];
 
@@ -105,9 +131,10 @@ function functionName(){
 //The first way is using the "dot notation"
 //Using this in Accessing the onclick property of a button would look like "button.onclick"
 
+//initialize buttons
 button1.onclick = goStore;//Here I used the dot notation to set the onclick property of button1 to the function "goStore" 
-button2.onclick = goCave;//Here I used the dot notation to set the onclick property of button1 to the function "goStore" 
-button3.onclick = fightDragon;//Here I used the dot notation to set the onclick property of button1 to the function "goStore" 
+button2.onclick = goCave;//Here I used the dot notation to set the onclick property of button2 to the function "goCave" 
+button3.onclick = fightDragon;//Here I used the dot notation to set the onclick property of button3 to the function "fightDragon" 
 
 //The "innerText" property controls the text that appears in an html element.
   // const info = document.querySelector("#info");
@@ -118,6 +145,9 @@ button3.onclick = fightDragon;//Here I used the dot notation to set the onclick 
 //Then copied and paste the content of goStore into goTown
 //updated values of button innerText
 function goTown(){
+  update(locations[0]);
+/*
+//copied code here to the update function
   button1.innerText = "Go to store";//Changes the previous text to "Go to store" when button1 is clicked
   button2.innerText = "Go to cave";//Changes the previous text of button2 to "Go to cave" when button1 is clicked
   button3.innerText = "Fight dragon";//Changes the previous text of button3 to "Fight dragon" when button1 is clicked
@@ -129,9 +159,29 @@ function goTown(){
   button1.onclick = goStore; //Runs the goStore function once button1 is clicked
   button2.onclick = goCave; //Runs the buyWeapon function once button2 is clicked
   button3.onclick = fightDragon; //Runs the goTown function once button2 is clicked
+*/
+/*
+  Now instead of assigning the innerText and onclick properties to specific strings and functions, the update function will use data from the location that is passed into it. 
+  Passing that data into it
+  Calling the update function here.
+  Then passing the locations argument which is an array into the update function.
+*/
+/*
+  The locations array contains two locations: the twon square and the store.
+  Currentlly I am passing in the whole array into the update function.
+  To access the town square i used the "bracket notation" which is a way of accessing items in an array.
+  This allows values in arrays to be accessed y index starting from 0(This is called zero based indexing)
+
+*/
+  
+
 }
 
 function goStore(){
+//updated functiion to call the "update function"
+//passed the second element of the locations array as an argument to the update function
+  update(locations[1])//This will call the call the updaaate function taking the second element un the locations array as an argument
+/*
   button1.innerText = "Buy 10 health (10 gold)";//Changes the previous text to "Buy 10 health (10 gold)" when button1 is clicked
   button2.innerText = "Buy weapon (30 gold)";//Changes the previous text of button2 to "Buy weapon (30 gold)" when button1 is clicked
   button3.innerText = "Go to town square";//Changes the previous text of button3 to "Go to town square" when button1 is clicked
@@ -142,26 +192,56 @@ function goStore(){
   button1.onclick = buyHealth; //Runs the buyHealth function once button1 is clicked
   button2.onclick = buyWeapon; //Runs the buyWeapon function once button2 is clicked
   button3.onclick = goTown; //Runs the goTown function once button2 is clicked
+*/
 }
 function goCave(){
-  console.log("Going to cave.");
+  update(locations[2]);
 }
 function fightDragon(){
   console.log("Fighting dragon.");
 }
 
 function buyHealth(){
-
+  if(gold >= 10){//Checks if user has enough gold to buy health
+    gold -= 10;//Using compouind assignment same as gold = gold - 10
+    goldText.innerText = gold;//To display the gold value on the screen;
+    health += 10;//Using compound assignment same as health = health + 10;
+    healthText.innerText = health;//To display the health value on the screen;
+  }else{//then if user dont have enough gold to buy health this runs
+    text.innerText = "You do not have enough gold to buy health."
+  }
+  
 }
 function buyWeapon(){
-
+  if(gold >= 30){
+    gold -= 30;
+  }
 }
 
-//Now there is  repetition in the goTown and goStor functions.
+//Now there is  repetition in the goTown and goStore functions.
 //When there is repetition in code it is a sign that another function is needed 
 //functions can take parameters which is the value given to the function each time it runs
 
 //An empty function  callled "update" which takes a parameter called "location"
+//Copied and pasted my goStore function code into the update function to consolidate my code
 function update(location){
+  button1.innerText = location["button text"][0];//uses the assignment(location) passed into the function to locate the button text and then the first text in the "button text" array.
+  button2.innerText = location["button text"][1];//uses the assignment(location) passed into the function to locate the button text and then the second text in the "button text" array.
+  button3.innerText = location["button text"][2];//uses the assignment(location) passed into the function to locate the button text and then the third text in the "button text" array.
+  text.innerText = location.text;//Here i used the dot notation instead of the bracket notation to access the text property in the location object //Once button1 is clicked I change the display text to indicate that you are now in the store 
+ 
+
+  //Now we update the functions that would run once the new updated text above on each button is clicked
+  //Did the same thing i did with the button text here 
+  button1.onclick = location["button functions"][0]; //Runs the goStore function once button1 is clicked
+  button2.onclick = location["button functions"][1]; //Runs the buyWeapon function once button2 is clicked
+  button3.onclick = location["button functions"][2]; //Runs the goTown function once button2 is clicked
+}
+
+//Would be used in the cave object
+function fightSlime(){
+
+}
+function fightBeast(){
   
 }
