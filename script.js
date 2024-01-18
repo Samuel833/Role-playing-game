@@ -17,7 +17,7 @@ xp = 1;//This will work as the already declared xp variable can be reasigned ano
 console.log(xp);
 let health = 100;
 let gold = 50;
-let currentWeapon = 0;
+let currentWeapon = 0;//Corresponds to an index in the weapons array. The player starts with a stick, since currentWeapon starts at 0 and weapons[0] is the stick weapon.
 let fighting; //Declared a variable called fighting without initialising it with a value
 let monsterHealth;
 let inventory;
@@ -215,6 +215,10 @@ function buyHealth(){
 function buyWeapon(){
   if(gold >= 30){
     gold -= 30;
+    currentWeapon ++;//For the user to buy the next weapon
+    goldText.innerText = gold;//To display the new value of gold
+    let newWeapon = weapons[currentWeapon];//To tell the player what new weapon they bought
+    text.innerText = "You now have a new weapon."
   }
 }
 
