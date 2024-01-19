@@ -217,8 +217,9 @@ function buyWeapon(){
     gold -= 30;
     currentWeapon ++;//For the user to buy the next weapon
     goldText.innerText = gold;//To display the new value of gold
-    let newWeapon = weapons[currentWeapon];//To tell the player what new weapon they bought
-    text.innerText = "You now have a new weapon."
+    let newWeapon = weapons[currentWeapon].name;//To tell the player the name of the new weapon they bought
+    text.innerText = "You now have a " + newWeapon + "."//Displays weapon name
+    inventory.push(newWeapon);//Adds every acquired weapon to the inventory array
   }
 }
 
