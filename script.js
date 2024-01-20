@@ -73,6 +73,23 @@ const weapons = [
     power: 100
   }
 ];
+const monsters = [
+  {
+  name: "slime",
+  level: 2,
+  health: 15
+  },
+  {
+  name: "fanged beast",
+  level: 8,
+  health: 60
+  },
+  {
+  name: "dragon",
+  level: 20,
+  health: 300
+  }
+];
 let value
 
 //An empty array called location since I just created an update funtion in line 130
@@ -115,6 +132,12 @@ const locations = [
     "button functions": [fightSlime, fightBeast, goTown],
     text: "You enter the cave. You see some monsters."
 
+  },
+  {
+    name: "fight",
+    "button text": ["Attack", "Dodge", "Run"],
+    "button functions": [attack, dodge, goTown],
+    text: "You are fighting a monster."
   }
 ];
 
@@ -197,9 +220,6 @@ function goStore(){
 function goCave(){
   update(locations[2]);
 }
-function fightDragon(){
-  console.log("Fighting dragon.");
-}
 
 function buyHealth(){
   if(gold >= 10){//Checks if user has enough gold to buy health
@@ -213,16 +233,40 @@ function buyHealth(){
   
 }
 function buyWeapon(){
-  if(gold >= 30){
-    gold -= 30;
-    currentWeapon ++;//For the user to buy the next weapon
-    goldText.innerText = gold;//To display the new value of gold
-    let newWeapon = weapons[currentWeapon].name;//To tell the player the name of the new weapon they bought
-    text.innerText = "You now have a " + newWeapon + "."//Displays weapon name
-    inventory.push(newWeapon);//Adds every acquired weapon to the inventory array
+  if(currentWeapon < weapons.length - 1){//Used the array length property to check if player has the best weapon i.e all the weapon in the inventory. Used the - 1 because array starts indexing at zero i.e the index of the last element in an array is one less that the lenght of the array.
+    if(gold >= 30){
+      gold -= 30;
+      currentWeapon ++;//For the user to buy the next weapon
+      goldText.innerText = gold;//To display the new value of gold
+      let newWeapon = weapons[currentWeapon].name;//To tell the player the name of the new weapon they bought
+      text.innerText = "You now have a " + newWeapon + "."//Displays weapon name
+      inventory.push(newWeapon);//Adds every acquired weapon to the inventory array
+      text.innerText += " In your inventory you have: " + inventory//Adds text to the end of text.innerText To avoid the old text from erasing then with string concatenation we display the inventory contents
+  
+    }else{
+      text.innerText = "You do not have enough gold to buy a weapon."
+    }
+  }else{
+    text.innnerText = "You already have the most powerful weapon!"
+    button2.innerText = "Sell weapon for 15 gold"//Gives the uswr the option to sell their old weapons once they have the most powerful weapon
+    button2.onclick = sellWeapon; //Calls the sellWeapon function
   }
+ 
 }
+function sellWeapon(){//Players should be not be able to sell their only weapon
+  if(inventory.length > 1){
+    gold += 15;//Adds 15 to the gold available everytime a weapon is sold
+    goldText.innerText = gold;//Displays total amount of gold available after sale
+    let currentWeapon = inventory.shift();//This is only scoped to the if statement, i.e it is not accessible outside of the if statement.The inventory array uses the shift method which removes the first element in the array and returns it, then the value is assigned to currentWeapon.
+    text.innerText = "You sold a " + currentWeapon + "."
+    text.innerText += " In your inventory you have: " + inventory
+  }
+  else{
+    text.innerText = "Don't sell your only weapon!"
+  }
 
+
+}
 //Now there is  repetition in the goTown and goStore functions.
 //When there is repetition in code it is a sign that another function is needed 
 //functions can take parameters which is the value given to the function each time it runs
@@ -245,8 +289,34 @@ function update(location){
 
 //Would be used in the cave object
 function fightSlime(){
-
+  fighting = 0;//fighting set to the index of slime in the monsters array
+  goFight();
 }
 function fightBeast(){
+  fighting = 1;//fighting set to the index of beast in the monsters array
+  goFight();
+}
+
+function fightDragon(){
+  fighting = 2;//fighting set to the index of dragon in the monsters array
+  goFight();
+}
+//Fighting each type of monster will use similar logic
+//This goFight function will manage that logic
+function goFight(){
+  update(locations[3])//Calls the fight object in the locations array
+  monsterHealth = monsters[fighting].health;//Sets the monsterhealth to be the health of the current monster.
+  monsterStats.style.display = "block";//Displays the previously hidden(with CSS) HTML element.
+  monsterName.innerText = monsters[fighting].name;//sets the innerText property of monsterName to be the name property of the current monster
+  monsterHealthText.innerText = monsterHealth;//sets the innerText property of monsterhealth to be the health property of the current monster
   
+}
+function attack(){
+  text.innerText = "The " + monsters[fighting].name + " attacks.";//To display the name of the monster attacking
+  text.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";//Displays player current weapon
+  health -= monsters[fighting].level;//sets health to equal the monster's level
+  monsterHealth -= weapons[currentWeapon].power;//Set monsterHealth to monsterHealth minus the power of the player's current weapon
+}
+function dodge(){
+
 }
