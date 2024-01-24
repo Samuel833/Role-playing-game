@@ -315,8 +315,29 @@ function attack(){
   text.innerText = "The " + monsters[fighting].name + " attacks.";//To display the name of the monster attacking
   text.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";//Displays player current weapon
   health -= monsters[fighting].level;//sets health to equal the monster's level
-  monsterHealth -= weapons[currentWeapon].power;//Set monsterHealth to monsterHealth minus the power of the player's current weapon
-}
-function dodge(){
+  monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;//Set monsterHealth to monsterHealth minus the power of the player's current weapon
+  //Then using the math object we added a random number between 1 and the value of xp.
+/*
+  The Math object in JavaScript contains static properties and methods for mathematical constants and functions. One of those is Math.random(), which generates a random number from 0 (inclusive) to 1 (exclusive). Another is Math.floor(), which rounds a given number down to the nearest integer.
+  Using these, you can generate a random number within a range. For example, this generates a random number between 1 and 5: Math.floor(Math.random() * 5) + 1;
+*/
+healthText.innerText = health;//Update the healthText innerText to health
+monsterHealthText.innerText = monsterHealth;//Update the innerText monsterHealth 
 
+//Added an if statement to call the lose function if health is less than or equal to zero
+if(health <= 0){
+  lose();
+  }else if(monsterHealth <= 0){
+    defeatMonster();
+  }
+}
+//
+function dodge(){
+  text.innerText = "You dodge the attack from the "+ monsters[fighting].name + "."
+}
+function defeatMonster(){
+
+}
+function lose(){
+  
 }
