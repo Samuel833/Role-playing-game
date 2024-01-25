@@ -138,6 +138,24 @@ const locations = [
     "button text": ["Attack", "Dodge", "Run"],
     "button functions": [attack, dodge, goTown],
     text: "You are fighting a monster."
+  },
+  {
+    name: "kill monster",
+    "button text": ["Go to town square", "Go to town square", "Go to town square"],
+    "button functions": [goTown, goTown, goTown],
+    text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.'
+  },
+  {
+    name: "lose",
+    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+    "button functions": [restart, restart, restart],
+    text: "You die. ☠️"
+  },
+  {
+    name: "win",
+    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+    "button functions": [restart, restart, restart],
+    text: "You defeat the dragon! YOU WIN THE GAME! 🎉"
   }
 ];
 
@@ -274,6 +292,7 @@ function sellWeapon(){//Players should be not be able to sell their only weapon
 //An empty function  callled "update" which takes a parameter called "location"
 //Copied and pasted my goStore function code into the update function to consolidate my code
 function update(location){
+  monsterStats.style.display = "none";//After a monster is defeated, the monster's stat box would no longer display.
   button1.innerText = location["button text"][0];//uses the assignment(location) passed into the function to locate the button text and then the first text in the "button text" array.
   button2.innerText = location["button text"][1];//uses the assignment(location) passed into the function to locate the button text and then the second text in the "button text" array.
   button3.innerText = location["button text"][2];//uses the assignment(location) passed into the function to locate the button text and then the third text in the "button text" array.
@@ -327,8 +346,13 @@ monsterHealthText.innerText = monsterHealth;//Update the innerText monsterHealth
 //Added an if statement to call the lose function if health is less than or equal to zero
 if(health <= 0){
   lose();
-  }else if(monsterHealth <= 0){
-    defeatMonster();
+  }else if (monsterHealth <= 0) {
+    /*
+    Javascript has a conditional operator called the ternary opeartor.
+    This can be used as a one- line if-else statement.
+    the syntax is "condition ? true : false"
+    */
+    fighting === 2 ? winGame() : defeatMonster();//Using a ternary operator Checks if player is fighting the dragon calls winGame(), else calls defeatMonster()
   }
 }
 //
@@ -336,8 +360,32 @@ function dodge(){
   text.innerText = "You dodge the attack from the "+ monsters[fighting].name + "."
 }
 function defeatMonster(){
-
+  //Set Gold to equal gold plus 6.7 times the monster's level
+  gold += Math.floor(monsters[fighting].level * 6.7);
+  //Set xp to xp plus the monster's level.
+  xp += monsters[fighting].level;
+  //Updated goldText and xpText to display the updated values
+  goldText.innerText = gold;
+  xpText.innerText = xp;
+  //Calls the updatefunction which takes the 5th argument in locations as an argument
+  update(locations[4]);
 }
 function lose(){
-  
+  update(locations[5]);
 }
+function winGame(){
+  update(locations[6]);
+}
+
+function restart(){
+  xp = 0;
+  health = 100;
+  gold = 50;
+  currentWeapon = 0;
+  inventory = ["stick"]
+  goldText.innerText = gold;
+  healthText.innerText = health;
+  xpText.innerText = xp;
+  goTown();
+}
+
