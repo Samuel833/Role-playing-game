@@ -142,7 +142,7 @@ const locations = [
   {
     name: "kill monster",
     "button text": ["Go to town square", "Go to town square", "Go to town square"],
-    "button functions": [goTown, goTown, goTown],
+    "button functions": [goTown, goTown, easterEgg],
     text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.'
   },
   {
@@ -156,6 +156,12 @@ const locations = [
     "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
     "button functions": [restart, restart, restart],
     text: "You defeat the dragon! YOU WIN THE GAME! 🎉"
+  },
+  {
+    name: "easter egg",
+    "button text": ["2", "8", "Go to town square?"],
+    "button functions": [pickTwo, pickEight, goTown],
+    text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!"
   }
 ];
 
@@ -333,9 +339,15 @@ function goFight(){
 function attack(){
   text.innerText = "The " + monsters[fighting].name + " attacks.";//To display the name of the monster attacking
   text.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";//Displays player current weapon
-  health -= monsters[fighting].level;//sets health to equal the monster's level
-  monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;//Set monsterHealth to monsterHealth minus the power of the player's current weapon
+  // health -= monsters[fighting].level;//sets health to equal the monster's level
+  health -= getMonsterAttackValue(monsters[fighting].level);//This sets health equal to health minus the return value of the getMonsterAttackValue function, and passes the level of the monster as an argument.
+  if (isMonsterHit()) {
+    monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;//Set monsterHealth to monsterHealth minus the power of the player's current weapon
   //Then using the math object we added a random number between 1 and the value of xp.
+  }else{
+    text.innerText += " You miss."
+  }
+  
 /*
   The Math object in JavaScript contains static properties and methods for mathematical constants and functions. One of those is Math.random(), which generates a random number from 0 (inclusive) to 1 (exclusive). Another is Math.floor(), which rounds a given number down to the nearest integer.
   Using these, you can generate a random number within a range. For example, this generates a random number between 1 and 5: Math.floor(Math.random() * 5) + 1;
@@ -354,6 +366,24 @@ if(health <= 0){
     */
     fighting === 2 ? winGame() : defeatMonster();//Using a ternary operator Checks if player is fighting the dragon calls winGame(), else calls defeatMonster()
   }
+  //On every attack this creates a chance that the player's weapon breaks
+  if (Math.random() <=  .1 && inventory.length !== 1){
+    text.innerText += " Your " + inventory.pop() + " breaks."//The inventory.pop() removes the last item in the inventory array and returns it
+    currentWeapon --;
+  }
+}
+function getMonsterAttackValue(level){
+//THe attack of the monster will be based on the monster's level and the player's xp.
+const hit = (level * 5) - (Math.floor(Math.random() * xp));//This will set the monster's attack to five times their level minus a random number between 0 and the player's xp
+console.log(hit);
+/*
+  If you play the game in its current state you might notice a bug. If your xp is high enough, the getMonsterAttackValue function will return a negative number, which will actually add to your total health when fighting a monster!
+*/
+return hit > 0 ? hit : 0;//This will prevent the function from returning a negative number
+}
+//Reurns a  true or false value to be used in the if statement in the attack function
+function isMonsterHit(){
+  return Math.random() > .2 || health < 20;
 }
 //
 function dodge(){
@@ -387,5 +417,57 @@ function restart(){
   healthText.innerText = health;
   xpText.innerText = xp;
   goTown();
+}
+
+//A small easter egg(hidden feature)
+function easterEgg(){
+  update(locations[7]);
+}
+function pick(guess){
+  const numbers = [];
+  while(numbers.length < 10){
+    numbers.push(Math.floor(Math.random() * 11))//Pushes a random number between 0 and 10 to the end of the numbers array.
+  }
+  text.innerText = "You picked " + guess + ". Here are the random numbers:\n"; //The \n called the new line character ensures the next set of string fall unto the next line
+  /*
+    for loops are declared with three expressions separated by semicolons. for (a; b; c), where a is the initialization expression, b is the condition, and c is the final expression.
+    The initialization expression is executed only once, before the loop starts, and is often used to define and set up the loop variable. Think of it like declaring a counter to use in your loop.
+    Many for loops use i as the counter and start from 0, so I let i = 0;
+    The second statement in a for loop, the condition statement, is evaluated at the beginning of every loop iteration. The loop will continue as long as the condition evaluates to be true.
+    The last statement in a for loop, the final expression, is executed at the end of each loop iteration.
+  */
+  for (let i = 0; i < 10; i++) {
+    text.innerText += numbers[i] + "\n"
+  }
+  //The .includes() method determines if an array contains an element and will return either true or false.
+  /*
+  Here is an example of the .includes() syntax:
+
+    const numbersArray = [1, 2, 3, 4, 5]
+    const number = 3
+
+    if (numbersArray.includes(number)) {
+    console.log("The number is in the array.")
+    }
+  */
+  if (numbers.includes(guess)){
+    text.innerText += "Right! You win 20 gold!";
+    gold += 20;
+    goldText.innerText = gold;
+  }else{
+    text.innerText += "Wrong! You lose 10 health!";
+    health -= 10;
+    healthText.innerText = health;
+  }
+  //Since health is subtracted from the player, I check if the player's health is less than or equal to 0. If it is, call the lose function.
+  if (health <= 0){
+    lose();
+  }
+}
+function pickTwo(){
+  pick(2)
+}
+function pickEight(){
+  pick(8)
 }
 
